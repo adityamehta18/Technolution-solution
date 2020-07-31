@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="index.css">
+    <title>Student Result</title>
+  </head>
+  <body>
+    <div class="container">
+      <table id="students">
+        <tr>
+          <th colspan="4">Students Result Board</th>
+        </tr>
+        <tr>
+          <th class="sub-headers">Student Name</th>
+          <th class="sub-headers">Roll Number</th>
+          <th class="sub-headers">Total Marks</th>
+          <th class="sub-headers">Status</th>
+        </tr>
+      </table>
+    </div>
+    <script type="text/javascript" src="data.json"></script>
+    <script type="text/javascript">
+      function sortBasedOnName(a, b) {
+        if(a.name > b.name) return 1;
+        else return -1;
+      }
+      data = data.sort(sortBasedOnName);
+
+      var topperRollNumber = "";
+      var highest = 0
+      for(var i = 0; i < data.length; i++) {
+        var marks = Number(data[i].marks.English) + Number(data[i].marks.Science) + Number(data[i].marks.Maths);
+        if(marks > highest) {
+          highest = marks;
+          topperRollNumber = data[i].rollNumber;
+        }
+      }
+
+      function displayStudentRecords() {
+        for(var i = 0; i < data.length; i++) {
+          var row = document.createElement("tr");
+          var name = document.createElement("td");
+          var rollNumber = document.createElement("td");
+          var totalMarks = document.createElement("td");
+          var status = document.createElement("td");
+          var nameText = document.createTextNode(upperCaseFirstLetter(data[i].name));
+          var rollNumberText = document.createTextNode(data[i].rollNumber);
+          var totalMarksText = document.createTextNode(Number(data[i].marks.English) + Number(data[i].marks.Science) + Number(data[i].marks.Maths));
+          var statusText = "";
+          if(data[i].marks.English < 20 || data[i].marks.Science < 20 || data[i].marks.Maths < 20) {
+            statusText = "Fail";
+            row.className = "failed";
+          }else if(topperRollNumber === data[i].rollNumber) {
+            statusText = "Topper";
+            row.className = "topper";
+          }else {
+            statusText = "Pass";
+          }
+          var statusText = document.createTextNode(statusText);
+          name.appendChild(nameText);
+          rollNumber.appendChild(rollNumberText);
+          totalMarks.appendChild(totalMarksText);
+          status.appendChild(statusText);
+          row.appendChild(name);
+          row.appendChild(rollNumber);
+          row.appendChild(totalMarks);
+          row.appendChild(status);
+          document.getElementById("students").appendChild(row);
+        }
+      }
+      function upperCaseFirstLetter(input) {
+        input = input[0].toUpperCase() + input.slice(1, input.length);
+        return input;
+      }
+      displayStudentRecords();
+    </script>
+  </body>
+</html>
